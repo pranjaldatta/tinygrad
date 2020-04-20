@@ -48,6 +48,17 @@ class Tensor:
         
         return result
 
+    def relu(self):
+
+        result = 0 if self.data < 0 else self.data
+        result = Tensor(result, (self,), "ReLU")
+
+        def _backward():
+            self.grad += (result.data > 0)*result.data
+        result._backward = _backward
+
+        return result
+
     def backward(self):
         """
         builds the topological order of the tensors as executed
@@ -67,6 +78,21 @@ class Tensor:
         self._grad = 1
         for t in reversed(topo_order):
             t._backward()
+
+    def __neg__(self):
+        return -self.data
+    def __sub__(self, var):
+        return self + (-var)
+    def __radd__(var, self):
+        return self + var
+    def __rsub__(var, self):
+        return self + (-var)
+    def __rmul__(var, self):
+        return self * var
+    def __truediv__(self, var):
+        return self*(var**-1)
+    def __rtruediv__(var,self):
+        return var*(self**-1)    
 
 
 
