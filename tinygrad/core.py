@@ -54,7 +54,7 @@ class Tensor:
         result = Tensor(result, (self,), "ReLU")
 
         def _backward():
-            self.grad += (result.data > 0)*result.data
+            self._grad += (result.data > 0)*result.data
         result._backward = _backward
 
         return result
@@ -83,8 +83,8 @@ class Tensor:
         return -self.data
     def __sub__(self, var):
         return self + (-var)
-    def __radd__(var, self):
-        return self + var
+    #def __radd__(var, self):
+        #return self + var
     def __rsub__(var, self):
         return self + (-var)
     def __rmul__(var, self):
