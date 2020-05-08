@@ -1,3 +1,5 @@
+import math
+
 class Tensor:
     """
     The base Tensor class. Wraps around a data item and stores 
@@ -55,6 +57,82 @@ class Tensor:
 
         def _backward():
             self._grad += (result.data > 0)*result._grad
+        result._backward = _backward
+
+        return result
+    
+    def cos(self):
+
+        result = Tensor(math.cos(self.data), (self,), "cos")
+
+        def _backward():
+            self._grad += (math.sin(self.data))*result._grad
+        result._backward = _backward
+
+        return result
+
+    def sin(self):
+
+        result = Tensor(math.sin(self.data), (self,), "sin")
+
+        def _backward():
+            self._grad += (math.cos(self.data))*result._grad
+        result._backward = _backward
+
+        return result
+    
+    def tan(self):
+
+        result = Tensor(math.tan(self.data), (self,), "tan")
+
+        def _backward():
+            self._grad += ((1/math.cos(self.data))**2)*result._grad
+        result._backward = _backward
+
+        return result
+
+    def cot(self):
+
+        result = Tensor(math.tan(self.data)**-1, (self,), "tan")
+
+        def _backward():
+            self._grad += (-1*(1/math.sin(self.data))**2)*result._grad
+        result._backward = _backward
+
+        return result
+
+    def tanh(self):
+
+        result = Tensor(math.tanh(self.data), (self,), "tan")
+
+        def _backward():
+            self._grad += ((1/math.cosh(self.data))**2)*result._grad
+        result._backward = _backward
+
+        return result    
+
+    def log(self, base="e"):
+
+        if base == "e":
+            base = math.e
+            log = lambda x : math.log(x)
+        elif (isinstance(base, int) or isinstance(base, float)) and base > 0:
+            log = lambda x : math.log(x, base)
+        
+        result = Tensor(log(self.data), (self,), "log")
+
+        def _backward():
+            self._grad = (1/(math.log(base)*self.data))*result._grad
+        result._backward = _backward
+
+        return result
+    
+    def exp(self):
+
+        result = Tensor(math.exp(self.data), (self,), "exp")
+
+        def _backward():
+            self._grad = result.data*result._grad
         result._backward = _backward
 
         return result
