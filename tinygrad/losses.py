@@ -56,4 +56,29 @@ def MaxMarginLoss(y_pred, y):
     avg_loss = sum(losses) * (1.0/len(losses))
     
     return avg_loss
+
+def L1Loss(y_pred, y):
+    """
+    Implements L1 Loss.
+ 
+    Parameters:
+        - y_pred: the model's predictions
+        - y: the truth values
+    
+    Returns:
+        - A scaler tensor loss value
+    """
+    try:
+        if len(y_pred) == len(y):
+            pass
+        else:
+            raise Exception
+    except Exception:
+        print("ERROR: y and y_pred of not same length")
+        exit()
+    
+    losses = [(pi-yi).abs() for yi, pi in zip(y, y_pred)]
         
+    avg_loss = sum(losses) * (1.0 / len(losses))
+
+    return avg_loss
