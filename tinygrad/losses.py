@@ -1,6 +1,7 @@
 from .core import Tensor
 
-def MSELoss(y_pred, y):
+
+def MSELoss(y_pred, y, reduction='mean'):
     """
     Mean Squared Error Loss Function.
 
@@ -25,11 +26,16 @@ def MSELoss(y_pred, y):
     
     losses = [(yi - pi)**2 for yi, pi in zip(y, y_pred)]
     
-    avg_loss = sum(losses) / (1.0 * len(losses))
+    if reduction == "mean":
+        avg_loss = sum(losses) / (1.0 * len(losses))
+    else:
+        # not implemented yet. remove when implemented.
+        raise NotImplementedError("reduction methods MEAN implemented. Got {}".format(reduction))
 
     return avg_loss
 
-def MaxMarginLoss(y_pred, y):
+
+def MaxMarginLoss(y_pred, y, reduction="mean"):
     """
     SVM Max-Margin Loss.
 
@@ -53,9 +59,13 @@ def MaxMarginLoss(y_pred, y):
 
     losses = [(1 + (-yi)*pi).relu() for yi, pi in zip(y, y_pred)]
     
-    avg_loss = sum(losses) * (1.0/len(losses))
+    if reduction == "mean":
+        avg_loss = sum(losses) * (1.0/len(losses))
+    else:
+        raise NotImplementedError("reduction methods MEAN implemented. Got {}".format(reduction))
     
     return avg_loss
+
 
 def L1Loss(y_pred, y):
     """
@@ -79,6 +89,53 @@ def L1Loss(y_pred, y):
     
     losses = [(pi-yi).abs() for yi, pi in zip(y, y_pred)]
         
-    avg_loss = sum(losses) * (1.0 / len(losses))
+    if reduction == "mean":
+        avg_loss = sum(losses) * (1.0/len(losses))
+    else:
+        raise NotImplementedError("reduction methods MEAN implemented. Got {}".format(reduction))
+
+    return avg_loss
+
+
+def SmoothL1Loss(y_pred, y, reduction="mean"):
+    """
+    Implements Smooth L1 Loss. Note: Here we implement the PyTorch version of the SmoothL1Loss.
+    i.e. in this version beta = 1. Please check online Pytorch documentation for 
+    more clarification
+
+    Parameters:
+        - y_pred: the model's prediction
+        - y: thee truth values
+    
+    Returns:
+        - A scaler tensor loss value
+    """
+    try:
+        if len(y_pred) == len(y):
+            pass
+        else:
+            raise Exception
+    except Exception:
+        print("EXCEPTION: y and y_pred of not same length")
+ 
+    # this implementation runs into runtime overflows
+    #losses = [0.5*(yi-pi)**2 if (yi-pi).abs().data < 1 else ((yi-pi)-0.5) for pi, yi in zip(y_pred, y)]
+
+    losses = []
+    for pi, yi in zip(y_pred, y):
+
+        diff = yi - pi
+        diff_abs = diff.abs()
+        if diff_abs.data < 1:
+            losses += [0.5*diff_abs**2]
+        else:
+            losses += [diff_abs - 0.5]
+
+    if reduction == "mean":
+        avg_loss = sum(losses) * (1.0 / len(losses))
+    elif reduction == "sum":
+        avg_loss = sum(losses)
+    else:
+        raise NotImplementedError("reduction methods only MEAN and SUM implemented. Got {}".format(reduction))
 
     return avg_loss
