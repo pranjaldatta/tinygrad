@@ -64,3 +64,59 @@ class SimpleSGD(Optimizer):
             p.data -= self.lr * p._grad
 
 
+
+class RMSProp(Optimizer):
+
+    def __init__(self, params, lr, gamma=0.9, eps=1e-6, weight_decay=None):
+        """
+        Implements RMSProp Optimization algorithm.
+
+        Parameters:
+        - params: parameter list of the model
+        
+        - lr: learning rate
+        
+        - gamma: RMSProp parameter
+
+        - eps: constant to improve numerical stability
+
+        - weight_decay: parameter for L2 regularization
+
+        Returns:
+        -   None. Performs weights update with step function.
+
+        """
+        if params is None or not isinstance(params, list):
+            raise ValueError("params parameter should be of type <list>. Got ", type(params))
+        if lr <= 0.0:
+            raise ValueError("learning rate should be > 0.0. Got ", lr)
+        if gamma <= 0.0 :
+            raise ValueError("gamma should be > 0.0. Got ", gamma)
+        if weight_decay is not None and weight_decay <= 0.0 :
+             raise ValueError("weight_decay should be > 0.0. Got ", weight_decay)
+        if eps is not None and eps <= 0.0 :
+             raise ValueError("eps should be > 0.0. Got ", weight_decay)
+
+        super().__init__(params)
+
+        self.lr = lr
+        self.gamma = gamma
+        self.eps = eps
+        self.s_t = []
+        for i in range(len(params)):
+            self.s_t += [0]
+        self.weight_decay = weight_decay
+
+    def step(self):
+        """
+        Perform optimizations step
+        """
+        for idx, p in enumerate(self.params):
+
+            self.s_t[idx] = self.gamma*self.s_t[idx] + (1.0-self.gamma)*p._grad**2
+            if self.weight_decay is not None:
+                p._grad += self.weight_decay * p.data
+            
+            p.data -= self.lr * (p._grad / (self.s_t[idx] + self.eps)**.5)
+
+            

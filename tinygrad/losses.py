@@ -67,7 +67,7 @@ def MaxMarginLoss(y_pred, y, reduction="mean"):
     return avg_loss
 
 
-def L1Loss(y_pred, y):
+def L1Loss(y_pred, y, reduction="mean"):
     """
     Implements L1 Loss.
  
