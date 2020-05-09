@@ -71,4 +71,19 @@ _b.backward()
 _c.backward()
 for idx, t, exp_grad in [("a", a, .5), ("b", b, 7.3890560989306495), ("c", c, 0.18463468653442752)]:
     print("For {}, value: {}, expected_grad:{}, grad: {}".format(idx, t.data, exp_grad, t._grad))
+print("-"*50)
+
+#abs
+a = Tensor(50)
+b = Tensor(-50.123123123)
+c = Tensor(0)
+_a = a.abs()
+_b = b.abs()
+_c = c.abs()
+_a.backward()
+_b.backward()
+_c.backward()
+for idx, t, exp_grad in [("a", a, 1), ("b", b, -1), ("c", c, 0)]:
+    print("For {}, value: {}, expected_grad:{}, grad: {}".format(idx, t.data, exp_grad, t._grad))
+print("-"*50)
 

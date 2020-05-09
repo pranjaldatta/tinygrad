@@ -3,7 +3,7 @@ import math
 class Tensor:
     """
     The base Tensor class. Wraps around a data item and stores 
-    addition variables that help in backward diff
+    additional variables that help in backward diff
     """
     def __init__(self, data, _parents=[], _operator=''):
        
@@ -136,6 +136,28 @@ class Tensor:
         result._backward = _backward
 
         return result
+    
+    def abs(self):
+        
+        result = Tensor(abs(self.data), (self,), "abs")
+
+        def _backward():
+            
+            if self.data == 0:
+                _derivative = 0
+            elif self.data < 0:
+                _derivative = -1
+            else:
+                _derivative = 1
+            
+            self._grad += _derivative * result._grad
+
+        result._backward = _backward
+
+        return result
+
+
+
 
     def backward(self):
         """
