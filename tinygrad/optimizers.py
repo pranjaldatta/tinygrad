@@ -119,4 +119,77 @@ class RMSProp(Optimizer):
             
             p.data -= self.lr * (p._grad / (self.s_t[idx] + self.eps)**.5)
 
+
+class Adam(Optimizer):
+
+    def __init__(self, params, lr, beta1=0.9, beta2=0.999, eps=1e-8, weight_decay=None):
+        """
+        Implements Adam Optimization Algorithm.
+
+        Parameters:
+        - params: parameter list of the model
+
+        - lr: initial learning rate
+
+        - beta1: coefficient of running average of gradient (similiar to momentum)
+
+        - beta2: coefficient of running average of squares of gradients
+                 (similar to RMSProp)
+
+        - eps: constant to improve numerical stability
+
+        - weight_decay: L2 regularization parameter
+
+        Returns:
+        -   None. Updates weights with step function
+        """
+        if params is None or not isinstance(params, list):
+            raise ValueError("params parameter should be of type <list>. Got ", type(params))
+        if lr <= 0.0:
+            raise ValueError("learning rate should be > 0.0. Got ", lr)
+        if beta1 <= 0.0 :
+            raise ValueError("beta1 should be > 0.0. Got ", beta1)
+        if beta2 <= 0.0 :
+            raise ValueError("beta2 should be > 0.0. Got ", beta2)
+        if weight_decay is not None and weight_decay <= 0.0 :
+             raise ValueError("weight_decay should be > 0.0. Got ", weight_decay)
+        if eps is not None and eps <= 0.0 :
+             raise ValueError("eps should be > 0.0. Got ", weight_decay)
+        
+        super().__init__(params)
+
+        self.lr = lr
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.eps = eps
+        self.weight_decay = weight_decay
+
+        self.m_t = []
+        self.v_t = []
+        for _ in range(len(self.params)):
+            self.m_t += [0]
+            self.v_t += [0]
+
+    def step(self):
+        """
+        Performs the optimization step
+        """
+        for idx, p in enumerate(self.params):
+
+            # calculating initial running average for each param
+            self.m_t[idx] = self.beta1*self.m_t[idx] + (1.0-self.beta1)*p._grad
+            self.v_t[idx] = self.beta2*self.v_t[idx] + (1.0-self.beta2)*p._grad**2
+
+            # bias-correcting them as suggested in the paper
+            m_cap = self.m_t[idx]/(1.0 - self.beta1**(idx+1))
+            v_cap = self.v_t[idx]/(1.0 - self.beta2**(idx+1))
+
+            if self.weight_decay is not None:
+                p._grad += self.weight_decay * p.data
+            
+            p.data -= self.lr * (m_cap/(v_cap**0.5 + self.eps))
+
+
+
+
             
