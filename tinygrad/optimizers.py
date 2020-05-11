@@ -372,11 +372,3 @@ class Adamax(Optimizer):
             m_cap = self.m_t[idx]/(1.0 - self.beta1**(idx+1))
 
             p.data -= self.lr * (m_cap / (self.u_t[idx] + self.eps))
-
-
-
-
-
-
-
-            
