@@ -190,6 +190,126 @@ class Adam(Optimizer):
             p.data -= self.lr * (m_cap/(v_cap**0.5 + self.eps))
 
 
+class Adagrad(Optimizer):
+    
+    def __init__(self, params, lr=0.01, eps=1e-8, weight_decay=None):
+        """
+        Implements Adagrad Optimization Algorithm.
+
+        Parameters:
+        - params: parameter list of the model
+
+        - lr: initial learning rate
+
+        - eps: constant to improve numerical stability
+
+        - weight_decay: L2 regularization parameter
+
+        Returns:
+        -   None. Updates weights with step function
+        """
+
+        if params is None or not isinstance(params, list):
+            raise ValueError("params parameter should be of type <list>. Got ", type(params))
+        if lr <= 0.0:
+            raise ValueError("learning rate should be > 0.0. Got ", lr)
+        if weight_decay is not None and weight_decay <= 0.0 :
+             raise ValueError("weight_decay should be > 0.0. Got ", weight_decay)
+        if eps is not None and eps <= 0.0 :
+             raise ValueError("eps should be > 0.0. Got ", weight_decay)
+        
+        super().__init__(params)
+        
+        self.lr = lr 
+        self.eps = eps
+        self.weight_decay = weight_decay
+        self.g_t = []
+        for _ in range(len(self.params)):
+            self.g_t += [0]
+        
+    def step(self):
+        """
+        Performs the optimization step
+        """
+        for idx, p in enumerate(self.params):
+
+            # storing the running squares of the gradients
+            self.g_t[idx] += p._grad**2
+
+            if self.weight_decay is not None:
+                p._grad += self.weight_decay * p.data
+            
+            p.data -= self.lr * (p._grad / (self.g_t[idx]+self.eps)**0.5)
+
+
+class Adadelta(Optimizer):
+    
+    def __init__(self, params, rho=0.9, lr=1.0, eps=1e-6, weight_decay=None):
+        """
+        Implements Adadelta Optimization Algorithm.
+
+        Parameters:
+        - params: parameter list of the model
+
+        - rho: coefficient used for computing a running average of 
+               squared gradients 
+
+        - lr: initial learning rate
+
+        - eps: constant to improve numerical stability
+
+        - weight_decay: L2 regularization parameter
+
+        Returns:
+        -   None. Updates weights with step function
+        """
+
+        if params is None or not isinstance(params, list):
+            raise ValueError("params parameter should be of type <list>. Got ", type(params))
+        if lr <= 0.0:
+            raise ValueError("learning rate should be > 0.0. Got ", lr)
+        if weight_decay is not None and weight_decay <= 0.0 :
+             raise ValueError("weight_decay should be > 0.0. Got ", weight_decay)
+        if eps is not None and eps <= 0.0 :
+             raise ValueError("eps should be > 0.0. Got ", weight_decay)
+        if rho is not None and rho <= 0.0:
+            raise ValueError("rho should be > 0.0. Got ", rho)
+
+
+        super().__init__(params)
+
+        self.rho = rho
+        self.lr = lr
+        self.weight_decay = weight_decay
+        self.eps = eps
+
+        self.g_t = []
+        self.delta_t = []
+        for _ in range(len(self.params)):
+            self.g_t += [0]
+            self.delta_t += [0]
+
+
+    def step(self):
+        """
+        Performs the optimization step
+        """
+        for idx, p in enumerate(self.params):
+            
+            self.g_t[idx] = self.rho * self.g_t[idx] + (1.0 - self.rho) * p._grad**2
+
+            if self.weight_decay is not None:
+                p._grad += self.weight_decay * p.data
+            
+            _g = ((self.delta_t[idx]+self.eps)**0.5)/((self.g_t[idx] + self.eps)**0.5)
+            _g *= p._grad
+
+            p.data -= _g   
+        
+            self.delta_t[idx] = self.rho * self.delta_t[idx] + (1.0 - self.rho) * _g**2
+
+
+
 
 
             
