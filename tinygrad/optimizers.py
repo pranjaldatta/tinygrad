@@ -42,6 +42,7 @@ class SimpleSGD(Optimizer):
             None. Performs weight update with step function. 
         
         """
+        
         if params is None or not isinstance(params, list):
             raise ValueError("model parameters of invalid type. Required <list>, Found: ",type(params))
         if lr is None or lr < 0.0 :
@@ -371,4 +372,6 @@ class Adamax(Optimizer):
             # bias correcting running average of gradient
             m_cap = self.m_t[idx]/(1.0 - self.beta1**(idx+1))
 
-            p.data -= self.lr * (m_cap / (self.u_t[idx] + self.eps))
+            p.data -= self.lr * (m_cap / (self.u_t[idx] + self.eps))         
+
+            
