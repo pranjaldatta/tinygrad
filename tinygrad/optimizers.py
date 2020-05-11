@@ -309,6 +309,73 @@ class Adadelta(Optimizer):
             self.delta_t[idx] = self.rho * self.delta_t[idx] + (1.0 - self.rho) * _g**2
 
 
+class Adamax(Optimizer):
+
+    def __init__(self, params, lr=0.002, beta1=0.9, beta2=0.999, eps=1e-8, weight_decay=None):
+        """
+        Implements the Adamax Optimizer.
+
+        Parameters:
+        - params: parameter list of the model
+
+        - lr: initial learning rate of the model
+
+        - beta1: coefficient to calculate running average of gradients
+
+        - beta2: coefficient to calculate running average of square of
+                 gradients.
+
+        - eps: constant to improve numerical stability
+
+        - weight_decay: L2 penalty parameters
+
+        Returns:
+        -   None. Updates weights with step function.
+        """
+        if params is None or not isinstance(params, list):
+            raise ValueError("params parameter should be of type <list>. Got ", type(params))
+        if lr <= 0.0:
+            raise ValueError("learning rate should be > 0.0. Got ", lr)
+        if weight_decay is not None and weight_decay <= 0.0 :
+             raise ValueError("weight_decay should be > 0.0. Got ", weight_decay)
+        if eps is not None and eps <= 0.0 :
+             raise ValueError("eps should be > 0.0. Got ", weight_decay)
+        if beta1 is not None and beta1 <= 0.0:
+            raise ValueError("rho should be > 0.0. Got ", rho)
+        if beta2 is not None and beta2 <= 0.0:
+            raise ValueError("beta2 should be > 0.0. got ", beta2)
+
+        super().__init__(params)
+
+        self.lr = lr
+        self.eps = eps
+        self.weight_decay = weight_decay
+        self.beta1 = beta1
+        self.beta2 = beta2
+
+        self.m_t = []
+        self.u_t = []
+        for _ in range(len(self.params)):
+            self.m_t += [0]
+            self.u_t += [0]
+        
+    def step(self):
+        """
+        Performs the optimization step.
+        """
+        for idx, p in enumerate(self.params):
+
+            self.m_t[idx] = self.beta1*self.m_t[idx] + (1.0-self.beta1)*p._grad
+            self.u_t[idx] = max(self.beta2*self.u_t[idx], abs(p._grad))
+
+            # bias correcting running average of gradient
+            m_cap = self.m_t[idx]/(1.0 - self.beta1**(idx+1))
+
+            p.data -= self.lr * (m_cap / (self.u_t[idx] + self.eps))
+
+
+
+
 
 
 
