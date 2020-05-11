@@ -33,14 +33,11 @@ class SimpleSGD(Optimizer):
         Parameters:
         - params : An iterable list of model parameters. Currently ONLY parameter
                    lists are supported.
-
-        -lr : learning rate for step optimization 
-        
+        -lr : learning rate for step optimization         
         - weight_decay : alpha parameter of L2 regularization loss. 
 
         Returns: 
-            None. Performs weight update with step function. 
-        
+            None. Performs weight update with step function.         
         """
         
         if params is None or not isinstance(params, list):
@@ -73,14 +70,10 @@ class RMSProp(Optimizer):
         Implements RMSProp Optimization algorithm.
 
         Parameters:
-        - params: parameter list of the model
-        
-        - lr: learning rate
-        
+        - params: parameter list of the model        
+        - lr: learning rate        
         - gamma: RMSProp parameter
-
         - eps: constant to improve numerical stability
-
         - weight_decay: parameter for L2 regularization
 
         Returns:
@@ -129,16 +122,11 @@ class Adam(Optimizer):
 
         Parameters:
         - params: parameter list of the model
-
         - lr: initial learning rate
-
         - beta1: coefficient of running average of gradient (similiar to momentum)
-
         - beta2: coefficient of running average of squares of gradients
                  (similar to RMSProp)
-
         - eps: constant to improve numerical stability
-
         - weight_decay: L2 regularization parameter
 
         Returns:
@@ -199,11 +187,8 @@ class Adagrad(Optimizer):
 
         Parameters:
         - params: parameter list of the model
-
         - lr: initial learning rate
-
         - eps: constant to improve numerical stability
-
         - weight_decay: L2 regularization parameter
 
         Returns:
@@ -251,14 +236,10 @@ class Adadelta(Optimizer):
 
         Parameters:
         - params: parameter list of the model
-
         - rho: coefficient used for computing a running average of 
                squared gradients 
-
         - lr: initial learning rate
-
         - eps: constant to improve numerical stability
-
         - weight_decay: L2 regularization parameter
 
         Returns:
@@ -318,16 +299,11 @@ class Adamax(Optimizer):
 
         Parameters:
         - params: parameter list of the model
-
         - lr: initial learning rate of the model
-
         - beta1: coefficient to calculate running average of gradients
-
         - beta2: coefficient to calculate running average of square of
                  gradients.
-
         - eps: constant to improve numerical stability
-
         - weight_decay: L2 penalty parameters
 
         Returns:
