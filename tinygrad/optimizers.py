@@ -42,6 +42,7 @@ class SimpleSGD(Optimizer):
             None. Performs weight update with step function. 
         
         """
+        
         if params is None or not isinstance(params, list):
             raise ValueError("model parameters of invalid type. Required <list>, Found: ",type(params))
         if lr is None or lr < 0.0 :
