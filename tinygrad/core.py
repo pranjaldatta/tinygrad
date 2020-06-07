@@ -155,6 +155,19 @@ class Tensor:
         result._backward = _backward
 
         return result
+    
+    def numpy(self, grad=True):
+        """
+        returns the tensor values when called.
+
+        Note: doesn't actually return in numpy format. Returns a list of 
+              the tensor.data and tensor.grad if grad = True. Else just returns 
+              a list of tensor.data
+        """
+        if grad:
+            return [self.data, self._grad]
+        else:
+            return [self.data]
 
 
 
