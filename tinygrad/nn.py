@@ -1,5 +1,6 @@
 import random
 from .core import Tensor
+import pickle as pkl
 
 class Module:
     
@@ -10,8 +11,37 @@ class Module:
     def parameters(self):
         return []  
     
+    def save(self, loc="model.pkl"):
+        """
+        save the model in the given location in a pickle file.
 
+        Parameters:
+        -> loc: where to save the file
+
+        Returns:
+        ->  None
+        """
+        params = [p.numpy() for p in self.parameters()]
+
+        with open(loc, "wb") as f:
+            pkl.dump(params, f)
+    
+    def load_pkl(self, loc):
+
+        with open(loc, "rb") as fp:
+            params = pkl.load(fp)
         
+        if len(params) != len(self.parameters()):
+            raise ValueError("len mismatch: model param len {} but got pickle weight len: {}".format(len(self.parameters()), len(params)))
+        
+        for _p, _lp in zip(self.parameters(), params):
+            
+            try:
+                _p.data = _lp[0]
+                _p._grad = _lp[1]
+            except:
+                _p.data = _lp[0]
+                _p._grad = 0
 
 
 class Neuron(Module):
