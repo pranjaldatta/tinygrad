@@ -79,3 +79,7 @@ Check demo1.ipynb and demo2.ipynb
 ## Whats Next? 
 
 Redo the entire repo to support vectors!
+
+## Credits
+
+Inspired by Andrej Karpathy's repo [here](https://github.com/karpathy/micrograd).
