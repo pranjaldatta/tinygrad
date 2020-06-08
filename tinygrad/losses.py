@@ -15,6 +15,11 @@ def MSELoss(y_pred, y, reduction='mean'):
     NOTE: y_pred and y should have the same dimensions
 
     """
+
+    if not hasattr(y_pred, "__iter__"):
+        y_pred = [y_pred]
+    if not hasattr(y, "__iter__"):
+        y = [y]
     try:
         if len(y_pred) == len(y):
             pass
@@ -48,6 +53,11 @@ def MaxMarginLoss(y_pred, y, reduction="mean"):
 
     NOTE: y_pred and y should have the same length
     """
+    
+    if not hasattr(y_pred, "__iter__"):
+        y_pred = [y_pred]
+    if not hasattr(y, "__iter__"):
+        y = [y]
     try:
         if len(y_pred) == len(y):
             pass
@@ -78,6 +88,11 @@ def L1Loss(y_pred, y, reduction="mean"):
     Returns:
         - A scaler tensor loss value
     """
+
+    if not hasattr(y_pred, "__iter__"):
+        y_pred = [y_pred]
+    if not hasattr(y, "__iter__"):
+        y = [y]
     try:
         if len(y_pred) == len(y):
             pass
@@ -110,6 +125,11 @@ def SmoothL1Loss(y_pred, y, reduction="mean"):
     Returns:
         - A scaler tensor loss value
     """
+
+    if not hasattr(y_pred, "__iter__"):
+        y_pred = [y_pred]
+    if not hasattr(y, "__iter__"):
+        y = [y]
     try:
         if len(y_pred) == len(y):
             pass
