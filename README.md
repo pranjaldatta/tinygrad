@@ -54,7 +54,7 @@ Yes
 
 Tried to conform to PyTorch's implementation of the following optimizers.
 
-- SimpleSGD 
+- SimpleSGD
 
 - RMSProp
 
@@ -72,11 +72,34 @@ Tried to conform to PyTorch's implementation of the following optimizers.
 
 Rudimentary saving and loading but Yes! Saves and loads gradients also but can be made to save and load only weights and not the gradients.
 
-## Demo 
+## Demo
 
-Check demo1.ipynb and demo2.ipynb
+Check [demo1.ipynb](https://github.com/pranjaldatta/tinygrad/blob/master/demo1.ipynb) and [demo2.ipynb](https://github.com/pranjaldatta/tinygrad/blob/master/demo2.ipynb) for comparison with [micrograd](https://github.com/karpathy/micrograd). Check [demo](https://github.com/pranjaldatta/tinygrad/tree/master/demo) for more detailed demos on common datasets.
 
-## Whats Next? 
+## Usage 
+
+- Clone the repo!. Paste the following code into your terminal
+
+```
+
+$ git clone https://github.com/pranjaldatta/tinygrad.git
+```
+
+- cd into the root repo
+
+```
+
+$ cd tinygrad
+```
+
+- pip install it
+
+```
+
+$ pip install .
+```
+
+## Whats Next?
 
 Redo the entire repo to support vectors!
 
