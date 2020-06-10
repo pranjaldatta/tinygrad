@@ -96,9 +96,13 @@ $ cd tinygrad
 $ pip install .
 ```
 
+## Notes Regarding Performance
+
+Since the implementation currently supports only scaler values, all matrix operatons are essentially implementated using for-loops. Hence, these are **really slow**. Tried training a fairly simple MNIST-denoising model, a single forward pass to ~10 secs!
+
 ## Whats Next?
 
-Redo the entire repo to support vectors!
+Redo the entire repo to support vectors and improve performance!
 
 ## Credits
 
